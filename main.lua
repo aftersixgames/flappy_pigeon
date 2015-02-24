@@ -1,3 +1,9 @@
+local physics = require "physics"
+physics.start()
+physics.setGravity( 0, 100 )
+
+gameStarted = false
+
 skySpeed = .2
 backgroundSpeed = 4
 groundSpeed = 10
@@ -42,11 +48,48 @@ ground2.x = backgroundSize
 ground2.y = display.contentHeight
 ground2.speed = groundSpeed
 
+  p_options =
+  {
+    -- Required params
+    width = 90,
+    height = 80,
+    numFrames = 2,
+    -- content scaling
+    sheetContentWidth = 180,
+    sheetContentHeight = 80,
+  }
+
+playerSheet = graphics.newImageSheet( "pigeon.png", p_options )
+player = display.newSprite( playerSheet, { name="player", start=1, count=2, time=150 } )
+player.anchorX = 0.5
+player.anchorY = 0.5
+player.x = display.contentCenterX - 150
+player.y = display.contentCenterY
+physics.addBody(player, "static", {density=.1, bounce=0.1, friction=1})
+player:applyForce(0, -300, player.x, player.y)
+player:play()
+
 function backgroundScroller(self,event)
   if self.x < (-self.width + (self.speed*2))   then
     self.x = self.width
   else
     self.x = self.x - self.speed
+  end
+end
+
+function flyUp(event)
+
+   if event.phase == "began" then
+
+    if gameStarted == false then
+       player.bodyType = "dynamic"
+       gameStarted = true
+       player:applyForce(0, -600, player.x, player.y)
+    else
+
+      player:applyForce(0, -900, player.x, player.y)
+
+      end
   end
 end
 
@@ -67,3 +110,5 @@ Runtime:addEventListener("enterFrame", sky1)
 
 sky2.enterFrame = backgroundScroller
 Runtime:addEventListener("enterFrame", sky2)
+
+Runtime:addEventListener("touch", flyUp)
