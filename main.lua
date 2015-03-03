@@ -63,11 +63,16 @@ playerSheet = graphics.newImageSheet( "pigeon.png", p_options )
 player = display.newSprite( playerSheet, { name="player", start=1, count=2, time=150 } )
 player.anchorX = 0.5
 player.anchorY = 0.5
-player.x = display.contentCenterX - 150
+player.x = display.contentCenterX - 100
 player.y = display.contentCenterY
 physics.addBody(player, "static", {density=.1, bounce=0.1, friction=1})
-player:applyForce(0, -300, player.x, player.y)
 player:play()
+
+instructions = display.newImageRect("instructions.png",400,328)
+instructions.anchorX = 0.5
+instructions.anchorY = 0.5
+instructions.x = display.contentCenterX
+instructions.y = display.contentCenterY
 
 function backgroundScroller(self,event)
   if self.x < (-self.width + (self.speed*2))   then
@@ -84,6 +89,7 @@ function flyUp(event)
     if gameStarted == false then
        player.bodyType = "dynamic"
        gameStarted = true
+       instructions.alpha = 0
        player:applyForce(0, -600, player.x, player.y)
     else
 
